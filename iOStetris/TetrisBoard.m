@@ -10,4 +10,34 @@
 
 @implementation TetrisBoard
 
+NSInteger board[10][18];
+
+-(void)moveRight{
+    
+}
+
+-(void)moveLeft{
+    
+}
+
+-(void)moveDown{
+    
+}
+
+-(void)rotate{
+
+}
+
+-(NSInteger)getBlockInRow: (int) row col:(int) col{
+    return 1;
+}
+
+-(void)cullRows{
+    
+}
+
+-(NSInteger)getScore{
+    return self.score;
+}
+
 @end
