@@ -11,8 +11,8 @@
 @interface TetrisView()
 
 //tetrominoes
-@property (strong, nonatomic) CALayer *straightPolyomnio;
-@property (strong, nonatomic) CALayer *squarePolyomino;
+@property (strong, nonatomic) CALayer *iPolyomnio;
+@property (strong, nonatomic) CALayer *oPolyomino;
 @property (strong, nonatomic) CALayer *tPolyomino;
 @property (strong, nonatomic) CALayer *lPolyomino;
 @property (strong, nonatomic) CALayer *jPolyomino;
@@ -30,5 +30,9 @@
 
 
 @implementation TetrisView
+
+-(void)awakeFromNib{
+    
+}
 
 @end

@@ -40,7 +40,7 @@
                                             <barButtonItem title="Pause" id="g98-n9-d8g"/>
                                         </items>
                                     </toolbar>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="elP-Yj-faa" userLabel="puzzleView">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="elP-Yj-faa" userLabel="puzzleView" customClass="TetrisView">
                                         <rect key="frame" x="156" y="8" width="289" height="520"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>

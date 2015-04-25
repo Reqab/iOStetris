@@ -10,11 +10,23 @@
 
 @interface TetrisBoard : NSObject
 
-@property (strong, nonatomic) NSMutableArray *nextPieces;
-
 @property (strong, nonatomic) NSMutableArray *scoreBoard;
 @property (assign, nonatomic) NSInteger score;
 @property (assign, nonatomic) NSInteger level;
+
+-(instancetype) init;
+-(BOOL)canMoveRight;
+-(void)moveRight;
+-(BOOL)canMoveLeft;
+-(void)moveLeft;
+-(BOOL)canMoveDown;
+-(void)moveDown;
+-(NSInteger)getCurrentPiece;
+-(NSInteger)getCurrentPieceXpos;
+-(NSInteger)getCurrentPieceYpos;
+-(NSInteger)getCurrentPieceDirection;
+-(NSInteger)getBlockInRow:(int)row col:(int)col;
+-(NSInteger)getScore;
 
 @end
 
