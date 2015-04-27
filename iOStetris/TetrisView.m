@@ -11,7 +11,7 @@
 @interface TetrisView()
 
 //tetrominoes
-@property (strong, nonatomic) CALayer *iPolyomnio;
+@property (strong, nonatomic) CALayer *iPolyomino;
 @property (strong, nonatomic) CALayer *oPolyomino;
 @property (strong, nonatomic) CALayer *tPolyomino;
 @property (strong, nonatomic) CALayer *lPolyomino;
@@ -21,18 +21,21 @@
 
 @property (strong, nonatomic) CALayer *tetrisLayer;
 
-//moving/rotating current tetrominoes information
-@property (assign, nonatomic) CGPoint touchStartPoint;
-@property (assign, nonatomic) CGPoint touchStartLayerPosition;
-@property (weak, nonatomic) CALayer *touchLayer;
-
 @end
 
 
 @implementation TetrisView
 
 -(void)awakeFromNib{
-    
+    self.iPolyomino = [[CALayer alloc] init];
+    self.iPolyomino.bounds = CGRectMake(0, 0, 100, 400);
+    self.iPolyomino.position = CGPointMake(150, 150);
+    CALayer *first = [[CALayer alloc]init];
+    first.backgroundColor = [UIColor blueColor].CGColor;
+    first.bounds = CGRectMake(0, 0, 100, 100);
+    [self.iPolyomino insertSublayer:first atIndex:0];
+    self.iPolyomino.name = @"polyomino";
+    [self.layer addSublayer:self.iPolyomino];
 }
 
 @end
