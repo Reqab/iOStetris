@@ -68,7 +68,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="tetrisView" destination="elP-Yj-faa" id="TBo-nS-zbm"/>
+                        <outlet property="puzzleView" destination="elP-Yj-faa" id="BeD-Jm-uUT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

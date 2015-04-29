@@ -7,8 +7,12 @@
 //
 
 #import "ViewController.h"
+#import "TetrisBoard.h"
+#import "TetrisView.h"
 
 @interface ViewController ()
+
+@property (weak, nonatomic) IBOutlet TetrisView *puzzleView;
 
 @end
 
@@ -23,5 +27,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)vi
 
 @end
