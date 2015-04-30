@@ -11,13 +11,8 @@
 @interface TetrisView()
 
 //tetrominoes
-@property (strong, nonatomic) CALayer *iPolyomino;
-@property (strong, nonatomic) CALayer *oPolyomino;
-@property (strong, nonatomic) CALayer *tPolyomino;
-@property (strong, nonatomic) CALayer *lPolyomino;
-@property (strong, nonatomic) CALayer *jPolyomino;
-@property (strong, nonatomic) CALayer *sPolyomino;
-@property (strong, nonatomic) CALayer *zPolyomino;
+@property (strong, nonatomic) CALayer *current;
+@property (strong, nonatomic) CALayer *next;
 
 @property (strong, nonatomic) CALayer *tetrisLayer;
 
@@ -34,32 +29,27 @@
 -(void)layoutSubviews{
     CGFloat blockWidth = self.bounds.size.width/10;
     CGFloat blockHeight = self.bounds.size.height/18;
-    self.iPolyomino.bounds = CGRectMake(0, 0, blockWidth*4, blockHeight);
-    self.iPolyomino.position = CGPointMake(150, 150);
-    self.iPolyomino.backgroundColor = [UIColor blueColor].CGColor;
+    self.current.bounds = CGRectMake(0, 0, blockWidth*4, blockHeight);
+    self.current.position = CGPointMake(150, 150);
+    self.current.backgroundColor = [UIColor blueColor].CGColor;
     for (int i = 0; i < 4; i++) {
-        CALayer *block = [self.iPolyomino.sublayers objectAtIndex:i];
+        CALayer *block = [self.current.sublayers objectAtIndex:i];
         block.bounds = CGRectMake(0, 0, blockWidth, blockHeight);
         block.position = CGPointMake(blockWidth/2+blockWidth*i, blockHeight/2);
     }
-    [self.layer addSublayer:self.iPolyomino];
+    [self.layer addSublayer:self.current];
 }
 
 -(void)awakeFromNib{
-    self.iPolyomino = [[CALayer alloc] init];
-    self.iPolyomino.name = @"polyomino";
+    self.current = [[CALayer alloc] init];
+    self.next = [[CALayer alloc] init];
+    self.current.name = @"polyomino";
     for (int i = 0; i < 4; i++) {
         CALayer *block = [[CALayer alloc] init];
         block.contents = (id)[UIImage imageNamed:@"silverBlock"].CGImage;
         block.name = @"block";
-        [self.iPolyomino insertSublayer:block atIndex:i];
+        [self.current insertSublayer:block atIndex:i];
     }
-    self.oPolyomino = [[CALayer alloc] init];
-    self.tPolyomino = [[CALayer alloc] init];
-    self.lPolyomino = [[CALayer alloc] init];
-    self.jPolyomino = [[CALayer alloc] init];
-    self.sPolyomino = [[CALayer alloc] init];
-    self.zPolyomino = [[CALayer alloc] init];
 }
 
 //touch events
@@ -85,8 +75,13 @@
         CGPoint pos = [touch locationInView:self];
         CGPoint delta = CGPointMake(pos.x-self.touchStartPoint.x,
                                     pos.y-self.touchStartPoint.y);
-        CGPoint newpos = CGPointMake(self.touchStartLayerPosition.x + delta.x,
-                                     self.touchStartLayerPosition.y);
+        CGPoint newpos;
+        if (self.touchLayer.position.x + delta.x <= 0)
+            newpos = CGPointMake(self.current.bounds.size.width/2, self.touchStartLayerPosition.y);
+        else if(self.touchLayer.position.x + delta.x >=  self.bounds.size.width)
+            newpos = CGPointMake(self.bounds.size.width - self.current.bounds.size.width/2, self.touchStartLayerPosition.y);
+        else
+            newpos = CGPointMake(self.touchStartLayerPosition.x + delta.x, self.touchStartLayerPosition.y);
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         self.touchLayer.position = newpos;
@@ -95,8 +90,16 @@
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    if(self.touchLayer != nil){
+        CGFloat blockWidth = self.bounds.size.width/10;
+        NSInteger row =  round(self.touchLayer.position.x/blockWidth);
+        CGPoint newpos = CGPointMake(blockWidth*row, self.touchLayer.position.y);
+        [CATransaction begin];
+        [CATransaction setDisableActions:YES];
+        self.touchLayer.position = newpos;
+        [CATransaction commit];
+    }
     self.touchLayer = nil;
-    
 }
 
 -(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
