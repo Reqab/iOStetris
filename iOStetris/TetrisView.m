@@ -12,7 +12,7 @@
 
 //tetrominoes
 @property (strong, nonatomic) CALayer *current;
-@property (strong, nonatomic) CALayer *next;
+@property (strong, nonatomic) NSArray *next;
 
 @property (strong, nonatomic) CALayer *tetrisLayer;
 
@@ -42,7 +42,6 @@
 
 -(void)awakeFromNib{
     self.current = [[CALayer alloc] init];
-    self.next = [[CALayer alloc] init];
     self.current.name = @"polyomino";
     for (int i = 0; i < 4; i++) {
         CALayer *block = [[CALayer alloc] init];
@@ -50,6 +49,13 @@
         block.name = @"block";
         [self.current insertSublayer:block atIndex:i];
     }
+}
+
+-(void)moveTetrominoDown{
+    CGFloat blockHeight = self.bounds.size.height/18;
+    CGPoint newpos = CGPointMake(self.current.position.x, self.current.position.y + blockHeight);
+    self.current.position = newpos;
+    [self setNeedsDisplay];
 }
 
 //touch events
@@ -76,12 +82,14 @@
         CGPoint delta = CGPointMake(pos.x-self.touchStartPoint.x,
                                     pos.y-self.touchStartPoint.y);
         CGPoint newpos;
+        
         if (self.touchLayer.position.x + delta.x <= 0)
-            newpos = CGPointMake(self.current.bounds.size.width/2, self.touchStartLayerPosition.y);
+            newpos = CGPointMake(self.current.bounds.size.width/2, self.current.position.y);
         else if(self.touchLayer.position.x + delta.x >=  self.bounds.size.width)
-            newpos = CGPointMake(self.bounds.size.width - self.current.bounds.size.width/2, self.touchStartLayerPosition.y);
+            newpos = CGPointMake(self.bounds.size.width - self.current.bounds.size.width/2, self.current.position.y);
         else
-            newpos = CGPointMake(self.touchStartLayerPosition.x + delta.x, self.touchStartLayerPosition.y);
+            newpos = CGPointMake(self.touchStartLayerPosition.x + delta.x, self.current.position.y);
+        
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         self.touchLayer.position = newpos;
@@ -93,7 +101,7 @@
     if(self.touchLayer != nil){
         CGFloat blockWidth = self.bounds.size.width/10;
         NSInteger row =  round(self.touchLayer.position.x/blockWidth);
-        CGPoint newpos = CGPointMake(blockWidth*row, self.touchLayer.position.y);
+        CGPoint newpos = CGPointMake(blockWidth*row, self.current.position.y);
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         self.touchLayer.position = newpos;

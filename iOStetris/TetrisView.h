@@ -10,4 +10,6 @@
 
 @interface TetrisView : UIView
 
+-(void)moveTetrominoDown;
+
 @end

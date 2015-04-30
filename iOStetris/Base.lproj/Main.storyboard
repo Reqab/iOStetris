@@ -37,7 +37,11 @@
                                                 </textField>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="z92-WG-ZJX"/>
-                                            <barButtonItem title="Pause" id="g98-n9-d8g"/>
+                                            <barButtonItem title="Pause" id="g98-n9-d8g">
+                                                <connections>
+                                                    <action selector="pause:" destination="BYZ-38-t0r" id="s3f-Au-IPL"/>
+                                                </connections>
+                                            </barButtonItem>
                                         </items>
                                     </toolbar>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="elP-Yj-faa" userLabel="puzzleView" customClass="TetrisView">
@@ -68,6 +72,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="pause" destination="g98-n9-d8g" id="fNT-9z-xCW"/>
                         <outlet property="puzzleView" destination="elP-Yj-faa" id="BeD-Jm-uUT"/>
                     </connections>
                 </viewController>
