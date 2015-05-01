@@ -7,48 +7,39 @@
 //
 
 #import "TetrisView.h"
+#import "ViewController.h"
 
 @interface TetrisView()
 
-//tetrominoes
-@property (strong, nonatomic) CALayer *current;
-@property (strong, nonatomic) NSArray *next;
-
-@property (strong, nonatomic) CALayer *tetrisLayer;
-
-//dragging
-@property (assign, nonatomic) CGPoint touchStartPoint;
-@property (assign, nonatomic) CGPoint touchStartLayerPosition;
-@property (weak, nonatomic) CALayer *touchLayer;
-
 @end
-
 
 @implementation TetrisView
 
+
 -(void)layoutSubviews{
-    CGFloat blockWidth = self.bounds.size.width/10;
-    CGFloat blockHeight = self.bounds.size.height/18;
-    self.current.bounds = CGRectMake(0, 0, blockWidth*4, blockHeight);
-    self.current.position = CGPointMake(150, 150);
-    self.current.backgroundColor = [UIColor blueColor].CGColor;
-    for (int i = 0; i < 4; i++) {
-        CALayer *block = [self.current.sublayers objectAtIndex:i];
-        block.bounds = CGRectMake(0, 0, blockWidth, blockHeight);
-        block.position = CGPointMake(blockWidth/2+blockWidth*i, blockHeight/2);
+    //setup tetrominoes
+    for (int i = 0; i < 7; i++) {
+        [self layoutTetromino:i];
     }
+    self.current = [self.tetrominoArray objectAtIndex:4];
     [self.layer addSublayer:self.current];
 }
 
 -(void)awakeFromNib{
-    self.current = [[CALayer alloc] init];
-    self.current.name = @"polyomino";
-    for (int i = 0; i < 4; i++) {
-        CALayer *block = [[CALayer alloc] init];
-        block.contents = (id)[UIImage imageNamed:@"silverBlock"].CGImage;
-        block.name = @"block";
-        [self.current insertSublayer:block atIndex:i];
+    //build tetromino array
+    NSMutableArray *tetrominoes = [[NSMutableArray alloc] init];
+    for (int tet = 0; tet < 7; tet++) {
+        CALayer *tetrominoLayer = [[CALayer alloc]init];
+        for (int block = 0; block < 4; block++) {
+            CALayer *blockLayer = [[CALayer alloc] init];
+            blockLayer.name = @"block";
+            [tetrominoLayer insertSublayer:blockLayer atIndex:block];
+        }
+        [tetrominoes addObject:tetrominoLayer];
     }
+    self.tetrominoArray = [NSArray arrayWithArray:tetrominoes];
+    
+    self.current = [self.tetrominoArray objectAtIndex:0];
 }
 
 -(void)moveTetrominoDown{
@@ -58,60 +49,36 @@
     [self setNeedsDisplay];
 }
 
-//touch events
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
-    UITouch *touch = [touches anyObject];
-    CGPoint pos = [touch locationInView:self];
-    CGPoint hitPoint = [self.layer convertPoint:pos toLayer:self.layer.superlayer];
+
+//setup tetrominoes
+int opolyomino[8] = {0,0, 1,0, 0,1, 1,1};
+int polyominos[7][10] = {
+    //block possition  |layer dimensions
+    {0,0, 1,0, 2,0, 3,0, 4,1},  //I
+    {0,0, 1,0, 0,1, 1,1, 2,2},  //O
+    {0,0, 1,0, 2,0, 1,1, 3,2},  //T
+    {0,0, 1,0, 2,0, 0,1, 3,2},  //L
+    {0,0, 1,0, 2,0, 2,1, 3,2},  //J
+    {1,0, 2,0, 0,1, 1,1, 3,2},  //S
+    {0,0, 1,0, 1,1, 1,2, 3,2}   //Z
+};
+
+-(void)layoutTetromino:(int)tet{
+    CGFloat blockWidth = self.bounds.size.width/10;
+    CGFloat blockHeight = self.bounds.size.height/18;
     
-    CALayer *layer = [self.layer hitTest:hitPoint];
-    if([layer.name isEqualToString:@"block"]){
-        self.touchStartPoint = pos;
-        self.touchStartLayerPosition = layer.superlayer.position;
-        self.touchLayer = layer.superlayer;
-    }else{
-        NSLog(@"touched table");
+    CALayer *tetromino = [self.tetrominoArray objectAtIndex:tet];
+    tetromino.bounds = CGRectMake(0, 0, blockWidth*polyominos[tet][8], blockHeight*polyominos[tet][9]);
+    tetromino.position = CGPointMake(blockWidth*(3+polyominos[tet][8]/2), blockHeight*polyominos[tet][9]/2);
+    
+    NSString *imageName = [NSString stringWithFormat:@"block%i", tet];
+    for (int i = 0; i < 4; i++) {
+        CALayer *block = [tetromino.sublayers objectAtIndex:i];
+        block.bounds = CGRectMake(0, 0, blockWidth, blockHeight);
+        block.contents = (id)[UIImage imageNamed:imageName].CGImage;
+        block.position = CGPointMake(blockWidth/2+blockWidth*polyominos[tet][i*2], blockHeight/2+blockHeight*polyominos[tet][i*2+1]);
     }
-}
-
--(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
-    if(self.touchLayer != nil){
-        UITouch *touch = [touches anyObject];
-        CGPoint pos = [touch locationInView:self];
-        CGPoint delta = CGPointMake(pos.x-self.touchStartPoint.x,
-                                    pos.y-self.touchStartPoint.y);
-        CGPoint newpos;
-        
-        if (self.touchLayer.position.x + delta.x <= 0)
-            newpos = CGPointMake(self.current.bounds.size.width/2, self.current.position.y);
-        else if(self.touchLayer.position.x + delta.x >=  self.bounds.size.width)
-            newpos = CGPointMake(self.bounds.size.width - self.current.bounds.size.width/2, self.current.position.y);
-        else
-            newpos = CGPointMake(self.touchStartLayerPosition.x + delta.x, self.current.position.y);
-        
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
-        self.touchLayer.position = newpos;
-        [CATransaction commit];
-    }
-}
-
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    if(self.touchLayer != nil){
-        CGFloat blockWidth = self.bounds.size.width/10;
-        NSInteger row =  round(self.touchLayer.position.x/blockWidth);
-        CGPoint newpos = CGPointMake(blockWidth*row, self.current.position.y);
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
-        self.touchLayer.position = newpos;
-        [CATransaction commit];
-    }
-    self.touchLayer = nil;
-}
-
--(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
-    self.touchLayer = nil;
 }
 
 @end

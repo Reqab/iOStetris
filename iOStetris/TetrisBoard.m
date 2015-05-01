@@ -7,21 +7,7 @@
 //
 
 #import "TetrisBoard.h"
-
-//pieces
-#define IPOLYOMINO 0
-#define OPOLYOMINO 1
-#define TPOLYOMINO 2
-#define LPOLYOMINO 3
-#define JPOLYOMINO 4
-#define SPOLYOMINO 5
-#define ZPOLYOMINO 6
-
-//directions
-#define UP 0
-#define RIGHT 1
-#define DOWN 2
-#define LEFT 3
+#import "ViewController.h"
 
 NSInteger board[10][18];
 NSInteger currentPieceXPos[4];
