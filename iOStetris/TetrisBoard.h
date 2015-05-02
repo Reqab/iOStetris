@@ -21,6 +21,8 @@
 -(void)moveLeft;
 -(BOOL)canMoveDown;
 -(void)moveDown;
+-(void)lockPiece;
+-(void)rotate;
 -(NSInteger)getCurrentPiece;
 -(NSInteger)getCurrentPieceXpos;
 -(NSInteger)getCurrentPieceYpos;

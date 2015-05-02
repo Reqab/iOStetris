@@ -47,9 +47,13 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="elP-Yj-faa" userLabel="puzzleView" customClass="TetrisView">
                                         <rect key="frame" x="156" y="8" width="289" height="520"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="elP-Yj-faa" secondAttribute="height" multiplier="10:18" id="ysN-Iz-pnA"/>
                                         </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="U0Q-1L-dKB" appends="YES" id="cJr-Fm-gqF"/>
+                                        </connections>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
@@ -74,9 +78,15 @@
                     <connections>
                         <outlet property="pause" destination="g98-n9-d8g" id="fNT-9z-xCW"/>
                         <outlet property="puzzleView" destination="elP-Yj-faa" id="BeD-Jm-uUT"/>
+                        <outlet property="tapGestureRecognizer" destination="U0Q-1L-dKB" id="r0T-Rh-Hx1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="U0Q-1L-dKB">
+                    <connections>
+                        <action selector="handleTap:" destination="BYZ-38-t0r" id="vVX-p0-67T"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="610" y="555"/>
         </scene>

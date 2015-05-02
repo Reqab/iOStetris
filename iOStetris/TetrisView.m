@@ -15,14 +15,41 @@
 
 @implementation TetrisView
 
+-(void)setScore:(NSInteger)score{
+    
+}
 
 -(void)layoutSubviews{
     //setup tetrominoes
     for (int i = 0; i < 7; i++) {
         [self layoutTetromino:i];
     }
-    self.current = [self.tetrominoArray objectAtIndex:4];
+    
+    //setup tetrisBoardView
+    CGFloat blockWidth = self.bounds.size.width/10;
+    CGFloat blockHeight = self.bounds.size.height/18;
+    for (int row = 0; row < 18; row++) {
+        for(int col = 0; col < 10; col++){
+            CALayer *block = [[CALayer alloc] init];
+            block.bounds = CGRectMake(0, 0, blockWidth, blockHeight);
+            block.position = CGPointMake(blockWidth/2+blockWidth*col, blockHeight/2+blockHeight*row);
+            block.name = @"tetrisBlock";
+            [self.layer insertSublayer:block atIndex:col+row*10];
+        }
+    }
+}
+
+-(void)setCurrentTetromino:(int)i{
+    [self.current removeFromSuperlayer];
+    self.current = [self.tetrominoArray objectAtIndex:i];
     [self.layer addSublayer:self.current];
+}
+
+-(void)setBlockContentInTetrisLayerAtRow:(int)row Col:(int)col Block:(NSInteger)block{
+    //NSLog(@"setBlockContentInTetrisLayerAtRow:(int)%i Col:(int)%i Block:(NSInteger)%ld", row, col, block);
+    CALayer *blockLayer = [self.layer.sublayers objectAtIndex:col+row*10];
+    NSString *imageName = [NSString stringWithFormat:@"block%ld", block];
+    blockLayer.contents = (id)[UIImage imageNamed:imageName].CGImage;
 }
 
 -(void)awakeFromNib{
@@ -38,8 +65,6 @@
         [tetrominoes addObject:tetrominoLayer];
     }
     self.tetrominoArray = [NSArray arrayWithArray:tetrominoes];
-    
-    self.current = [self.tetrominoArray objectAtIndex:0];
 }
 
 -(void)moveTetrominoDown{
@@ -49,7 +74,10 @@
     [self setNeedsDisplay];
 }
 
-
+-(void)rotateTetromino:(int)direction{
+    CATransform3D xForm = CATransform3DIdentity;
+    self.current.transform = CATransform3DRotate(xForm, M_PI_2*direction, 0, 0, 1);
+}
 
 //setup tetrominoes
 int opolyomino[8] = {0,0, 1,0, 0,1, 1,1};
@@ -61,7 +89,7 @@ int polyominos[7][10] = {
     {0,0, 1,0, 2,0, 0,1, 3,2},  //L
     {0,0, 1,0, 2,0, 2,1, 3,2},  //J
     {1,0, 2,0, 0,1, 1,1, 3,2},  //S
-    {0,0, 1,0, 1,1, 1,2, 3,2}   //Z
+    {0,0, 1,0, 1,1, 2,1, 3,2}   //Z
 };
 
 -(void)layoutTetromino:(int)tet{
@@ -70,7 +98,7 @@ int polyominos[7][10] = {
     
     CALayer *tetromino = [self.tetrominoArray objectAtIndex:tet];
     tetromino.bounds = CGRectMake(0, 0, blockWidth*polyominos[tet][8], blockHeight*polyominos[tet][9]);
-    tetromino.position = CGPointMake(blockWidth*(3+polyominos[tet][8]/2), blockHeight*polyominos[tet][9]/2);
+    tetromino.position = CGPointMake(blockWidth*(3+polyominos[tet][8]/2.0), blockHeight*polyominos[tet][9]/2.0);
     
     NSString *imageName = [NSString stringWithFormat:@"block%i", tet];
     for (int i = 0; i < 4; i++) {

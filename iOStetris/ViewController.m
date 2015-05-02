@@ -17,6 +17,7 @@
 @property (strong, nonatomic) NSTimer *timer;
 @property (assign, nonatomic) BOOL isPaused;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *pause;
+@property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapGestureRecognizer;
 
 
 @end
@@ -33,39 +34,65 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)moveDown{
+-(void)setTetrisView{
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     TetrisBoard *board = appDelegate.board;
     
-    [self.puzzleView moveTetrominoDown];
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 10; col++) {
+            NSInteger block = [board getBlockInRow:row col:col];
+            [self.puzzleView setBlockContentInTetrisLayerAtRow:row Col:col Block:block];
+        }
+    }
+}
+
+-(void)moveDown{
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    TetrisBoard *board = appDelegate.board;
+    if([board canMoveDown]){
+        [board moveDown];
+        [self.puzzleView moveTetrominoDown];
+    }else{
+        NSLog(@"lockPiece");
+        [board lockPiece];
+        [self setTetrisView];
+        [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    TetrisBoard *board = appDelegate.board;
     
     //timer setup
     self.isPaused = NO;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(moveDown) userInfo:nil repeats:YES];
+    [self.puzzleView setCurrentTetromino:(int)board.getCurrentPiece];
 }
 
 - (IBAction)pause:(id)sender {
     if(self.isPaused){
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(moveDown) userInfo:nil repeats:YES];
         self.isPaused = NO;
-        [self.puzzleView setUserInteractionEnabled:YES];
         self.pause.title = @"Pause";
     }else{
         [self.timer invalidate];
         self.timer = nil;
         self.isPaused = YES;
-        [self.puzzleView setUserInteractionEnabled:NO];
         self.pause.title = @"Resume";
     }
+}
+
+//tap events
+- (IBAction)handleTap:(id)sender {
+    [self.puzzleView rotateTetromino:1];
 }
 
 //touch events
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+    if([self.pause.title  isEqual: @"Resume"]) return;
     UITouch *touch = [touches anyObject];
     CGPoint pos = [touch locationInView:self.puzzleView];
     CGPoint hitPoint = [self.puzzleView.layer convertPoint:pos toLayer:self.puzzleView.layer.superlayer];
@@ -105,8 +132,10 @@
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     if(self.puzzleView.touchLayer != nil){
         CGFloat blockWidth = self.puzzleView.bounds.size.width/10;
-        NSInteger row =  round(self.puzzleView.touchLayer.position.x/blockWidth);
-        CGPoint newpos = CGPointMake(blockWidth*row, self.puzzleView.current.position.y);
+        NSInteger row = round(self.puzzleView.touchLayer.position.x/blockWidth);
+        NSInteger rowAdj = round(self.puzzleView.current.bounds.size.width/blockWidth);
+        rowAdj = rowAdj%2;
+        CGPoint  newpos = CGPointMake(blockWidth*(row - rowAdj*0.5), self.puzzleView.current.position.y);
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         self.puzzleView.touchLayer.position = newpos;

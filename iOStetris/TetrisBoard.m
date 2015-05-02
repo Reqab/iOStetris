@@ -22,7 +22,7 @@ NSInteger direction;
     if(self = [super init]){
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 18; y++) {
-                board[x][y] = 0;
+                board[x][y] = -1;
             }
         }
         [self nextPiece];
@@ -38,56 +38,56 @@ NSInteger direction;
     switch (currentPiece) {
         case IPOLYOMINO:
             for (int i = 0; i < 4; i ++){
-                currentPieceYPos[i] = 17;
+                currentPieceYPos[i] = 0;
                 currentPieceXPos[i] = 3+i;
             }
             break;
             
         case OPOLYOMINO:
-            currentPieceXPos[0] = currentPieceXPos[2] = 4;
-            currentPieceXPos[1] = currentPieceXPos[3] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = 17;
-            currentPieceYPos[2] = currentPieceYPos[3] = 16;
+            currentPieceXPos[0] = currentPieceXPos[2] = 3;
+            currentPieceXPos[1] = currentPieceXPos[3] = 4;
+            currentPieceYPos[0] = currentPieceYPos[1] = 0;
+            currentPieceYPos[2] = currentPieceYPos[3] = 1;
             break;
             
         case TPOLYOMINO:
             currentPieceXPos[0] = 3;
             currentPieceXPos[1] = currentPieceXPos[3] = 4;
             currentPieceXPos[2] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 17;
-            currentPieceYPos[3] = 16;
+            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 0;
+            currentPieceYPos[3] = 1;
             break;
             
         case LPOLYOMINO:
             currentPieceXPos[0] = currentPieceXPos[3] = 3;
             currentPieceXPos[1] = 4;
             currentPieceXPos[2] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 17;
-            currentPieceYPos[3] = 16;
+            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 0;
+            currentPieceYPos[3] = 1;
             break;
             
         case JPOLYOMINO:
             currentPieceXPos[0] = 3;
             currentPieceXPos[1] = 4;
             currentPieceXPos[2] = currentPieceXPos[3] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 17;
-            currentPieceYPos[3] = 16;
+            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 0;
+            currentPieceYPos[3] = 1;
             break;
             
         case SPOLYOMINO:
             currentPieceXPos[2] = 3;
             currentPieceXPos[0] = currentPieceXPos[3] = 4;
             currentPieceXPos[1] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = 17;
-            currentPieceXPos[2] = currentPieceXPos[3] = 16;
+            currentPieceYPos[0] = currentPieceYPos[1] = 0;
+            currentPieceYPos[2] = currentPieceYPos[3] = 1;
             break;
             
         case ZPOLYOMINO:
             currentPieceXPos[0] = 3;
             currentPieceXPos[1] = currentPieceXPos[2] = 4;
             currentPieceXPos[3] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = 17;
-            currentPieceXPos[2] = currentPieceXPos[3] = 16;
+            currentPieceYPos[0] = currentPieceYPos[1] = 0;
+            currentPieceYPos[2] = currentPieceYPos[3] = 1;
             break;
     }
 }
@@ -124,22 +124,22 @@ NSInteger direction;
 
 -(BOOL)canMoveDown{
     for (int i = 0; i < 4; i++) {
-        if (currentPieceYPos[i] == 0) return NO;
-        if (board[currentPieceXPos[i]][currentPieceYPos[i-1]] != 0) return NO;
+        if (currentPieceYPos[i] == 17) return NO;
+        if (board[currentPieceXPos[i]][currentPieceYPos[i]+1] > -1) return NO;
     }
     return YES;
 }
 
 -(void)moveDown{
-    if(![self canMoveDown]){
-        for (int i = 0; i < 4; i++) {
-            board[currentPieceXPos[i]][currentPieceYPos[i]] = currentPiece;
-            [self nextPiece];
-        }
-        return;
-    }
     for (int i = 0; i < 4; i++)
-        currentPieceYPos[i]--;
+        currentPieceYPos[i]++;
+}
+
+-(void)lockPiece{
+    for (int i = 0; i < 4; i++) {
+        board[currentPieceXPos[i]][currentPieceYPos[i]] = currentPiece;
+    }
+    [self nextPiece];
 }
 
 -(void)rotate{

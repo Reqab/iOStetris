@@ -14,13 +14,14 @@
 @property (strong, nonatomic) CALayer *current;
 @property (strong, nonatomic) NSArray *tetrominoArray;
 
-@property (strong, nonatomic) CALayer *tetrisLayer;
-
 //dragging
 @property (assign, nonatomic) CGPoint touchStartPoint;
 @property (assign, nonatomic) CGPoint touchStartLayerPosition;
 @property (weak, nonatomic) CALayer *touchLayer;
 
+-(void)rotateTetromino:(int)direction;
+-(void)setBlockContentInTetrisLayerAtRow:(int)row Col:(int)col Block:(NSInteger)block;
 -(void)moveTetrominoDown;
+-(void)setCurrentTetromino:(int)i;
 
 @end
