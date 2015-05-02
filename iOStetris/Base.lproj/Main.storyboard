@@ -29,7 +29,7 @@
                                             <barButtonItem title="Menu" id="zo3-sR-ozv"/>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="spa-xP-nwp"/>
                                             <barButtonItem style="plain" id="6d2-Nz-uaU">
-                                                <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Score: 999999999" borderStyle="roundedRect" minimumFontSize="17" id="yhg-RQ-hf8" userLabel="scoreTextField">
+                                                <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Score: 999999999" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" id="yhg-RQ-hf8" userLabel="scoreTextField">
                                                     <rect key="frame" x="232" y="7" width="133" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -78,6 +78,7 @@
                     <connections>
                         <outlet property="pause" destination="g98-n9-d8g" id="fNT-9z-xCW"/>
                         <outlet property="puzzleView" destination="elP-Yj-faa" id="BeD-Jm-uUT"/>
+                        <outlet property="scoreTextField" destination="yhg-RQ-hf8" id="vp8-8i-PHV"/>
                         <outlet property="tapGestureRecognizer" destination="U0Q-1L-dKB" id="r0T-Rh-Hx1"/>
                     </connections>
                 </viewController>

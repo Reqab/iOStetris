@@ -15,10 +15,6 @@
 
 @implementation TetrisView
 
--(void)setScore:(NSInteger)score{
-    
-}
-
 -(void)layoutSubviews{
     //setup tetrominoes
     for (int i = 0; i < 7; i++) {
@@ -41,6 +37,8 @@
 
 -(void)setCurrentTetromino:(int)i{
     [self.current removeFromSuperlayer];
+    CATransform3D xForm = CATransform3DIdentity;
+    self.current.transform = CATransform3DRotate(xForm, 0, 0, 0, 1);
     self.current = [self.tetrominoArray objectAtIndex:i];
     [self.layer addSublayer:self.current];
 }
@@ -80,7 +78,6 @@
 }
 
 //setup tetrominoes
-int opolyomino[8] = {0,0, 1,0, 0,1, 1,1};
 int polyominos[7][10] = {
     //block possition  |layer dimensions
     {0,0, 1,0, 2,0, 3,0, 4,1},  //I

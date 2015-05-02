@@ -18,6 +18,7 @@
 @property (assign, nonatomic) BOOL isPaused;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *pause;
 @property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapGestureRecognizer;
+@property (weak, nonatomic) IBOutlet UITextField *scoreTextField;
 
 
 @end
@@ -64,6 +65,7 @@
     [super viewDidAppear:animated];
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     TetrisBoard *board = appDelegate.board;
+    self.scoreTextField.text = [NSString stringWithFormat:@"%ld", [board getScore]];
     
     //timer setup
     self.isPaused = NO;
@@ -84,9 +86,15 @@
     }
 }
 
-//tap events
+//tap events for rotate
 - (IBAction)handleTap:(id)sender {
-    [self.puzzleView rotateTetromino:1];
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    TetrisBoard *board = appDelegate.board;
+    if([board canRotate]){
+        [board rotate];
+        int direction = (int)[board getCurrentPieceDirection];
+        [self.puzzleView rotateTetromino:direction];
+    }
 }
 
 //touch events

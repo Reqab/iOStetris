@@ -22,6 +22,7 @@
 -(BOOL)canMoveDown;
 -(void)moveDown;
 -(void)lockPiece;
+-(BOOL)canRotate;
 -(void)rotate;
 -(NSInteger)getCurrentPiece;
 -(NSInteger)getCurrentPieceXpos;
@@ -29,6 +30,8 @@
 -(NSInteger)getCurrentPieceDirection;
 -(NSInteger)getBlockInRow:(int)row col:(int)col;
 -(NSInteger)getScore;
+-(void)newGame;
+-(void)clearFullRows;
 
 @end
 

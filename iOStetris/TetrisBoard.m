@@ -18,16 +18,46 @@ NSInteger direction;
 
 @implementation TetrisBoard
 
+int polyominoRotations[28][8] = {
+    {0,0, 1,0, 2,0, 3,0},   //I
+    {1,-1, 1,0, 1,1, 1,2},
+    {0,0, 1,0, 2,0, 3,0},
+    {1,-1, 1,0, 1,1, 1,2},
+    
+    {0,0, 1,0, 0,1, 1,1},   //O
+    {0,0, 1,0, 0,1, 1,1},
+    {0,0, 1,0, 0,1, 1,1},
+    {0,0, 1,0, 0,1, 1,1},
+    
+    {0,0, 1,0, 2,0, 1,1},   //T
+    {1,-1, 0,0, 1,0, 1,1},
+    {1,0, 0,1, 1,1, 2,1},
+    {1,-1, 1,0, 2,0, 1,1},
+    
+    {0,0, 1,0, 2,0, 0,1},   //L
+    {1,-1, 2,-1, 2,0, 2,1},
+    {2,0, 0,1, 1,1, 2,1},
+    {1,-1, 1,0, 1,1, 2,1},
+    
+    {0,0, 1,0, 2,0, 2,1},   //J
+    {2,-1, 2,0, 1,1, 2,1},
+    {0,0, 0,1, 1,1, 2,1},
+    {1,-1, 2,-1, 1,0, 1,1},
+    
+    {1,0, 2,0, 0,1, 1,1},   //S
+    {0,-1, 0,0, 1,0, 1,1},
+    {1,0, 2,0, 0,1, 1,1},
+    {0,-1, 0,0, 1,0, 1,1},
+    
+    {0,0, 1,0, 1,1, 2,1},   //Z
+    {1,-1, 0,0, 1,0, 0,1},
+    {0,0, 1,0, 1,1, 2,1},
+    {1,-1, 0,0, 1,0, 0,1}
+};
+
 -(instancetype)init{
     if(self = [super init]){
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 18; y++) {
-                board[x][y] = -1;
-            }
-        }
-        [self nextPiece];
-        self.score = 0;
-        self.level = 1;
+        [self newGame];
     }
     return self;
 }
@@ -35,60 +65,9 @@ NSInteger direction;
 -(void)nextPiece{
     direction = UP;
     currentPiece = arc4random()%7;
-    switch (currentPiece) {
-        case IPOLYOMINO:
-            for (int i = 0; i < 4; i ++){
-                currentPieceYPos[i] = 0;
-                currentPieceXPos[i] = 3+i;
-            }
-            break;
-            
-        case OPOLYOMINO:
-            currentPieceXPos[0] = currentPieceXPos[2] = 3;
-            currentPieceXPos[1] = currentPieceXPos[3] = 4;
-            currentPieceYPos[0] = currentPieceYPos[1] = 0;
-            currentPieceYPos[2] = currentPieceYPos[3] = 1;
-            break;
-            
-        case TPOLYOMINO:
-            currentPieceXPos[0] = 3;
-            currentPieceXPos[1] = currentPieceXPos[3] = 4;
-            currentPieceXPos[2] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 0;
-            currentPieceYPos[3] = 1;
-            break;
-            
-        case LPOLYOMINO:
-            currentPieceXPos[0] = currentPieceXPos[3] = 3;
-            currentPieceXPos[1] = 4;
-            currentPieceXPos[2] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 0;
-            currentPieceYPos[3] = 1;
-            break;
-            
-        case JPOLYOMINO:
-            currentPieceXPos[0] = 3;
-            currentPieceXPos[1] = 4;
-            currentPieceXPos[2] = currentPieceXPos[3] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = currentPieceYPos[2] = 0;
-            currentPieceYPos[3] = 1;
-            break;
-            
-        case SPOLYOMINO:
-            currentPieceXPos[2] = 3;
-            currentPieceXPos[0] = currentPieceXPos[3] = 4;
-            currentPieceXPos[1] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = 0;
-            currentPieceYPos[2] = currentPieceYPos[3] = 1;
-            break;
-            
-        case ZPOLYOMINO:
-            currentPieceXPos[0] = 3;
-            currentPieceXPos[1] = currentPieceXPos[2] = 4;
-            currentPieceXPos[3] = 5;
-            currentPieceYPos[0] = currentPieceYPos[1] = 0;
-            currentPieceYPos[2] = currentPieceYPos[3] = 1;
-            break;
+    for (int i = 0; i < 4; i++) {
+        currentPieceYPos[i] = polyominoRotations[currentPiece*4][i*2+1];
+        currentPieceXPos[i] = 3+polyominoRotations[currentPiece*4][i*2];
     }
 }
 
@@ -142,8 +121,19 @@ NSInteger direction;
     [self nextPiece];
 }
 
--(void)rotate{
+-(BOOL)canRotate{
+    return true;
+}
 
+-(void)rotate{
+    NSInteger newDirection = (direction+1)%4;
+    for (int i = 0; i < 4; i++) {
+        NSInteger deltaX = polyominoRotations[currentPiece*4+newDirection][i*2] - polyominoRotations[currentPiece*4+direction][i*2];
+        NSInteger deltaY = polyominoRotations[currentPiece*4+newDirection][i*2+1] - polyominoRotations[currentPiece*4+direction][i*2+1];
+        currentPieceXPos[i] += deltaX;
+        currentPieceYPos[i] += deltaY;
+    }
+    direction = newDirection;
 }
 
 -(NSInteger)getBlockInRow:(int)row col:(int)col{
@@ -167,7 +157,17 @@ NSInteger direction;
 }
 
 -(void)clearFullRows{
-    
+}
+
+-(void)newGame{
+    for (int x = 0; x < 10; x++) {
+        for (int y = 0; y < 18; y++) {
+            board[x][y] = -1;
+        }
+    }
+    [self nextPiece];
+    self.score = 0;
+    self.level = 1;
 }
 
 -(NSInteger)getScore{
