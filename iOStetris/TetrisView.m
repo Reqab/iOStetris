@@ -46,6 +46,7 @@
 -(void)setBlockContentInTetrisLayerAtRow:(int)row Col:(int)col Block:(NSInteger)block{
     //NSLog(@"setBlockContentInTetrisLayerAtRow:(int)%i Col:(int)%i Block:(NSInteger)%ld", row, col, block);
     CALayer *blockLayer = [self.layer.sublayers objectAtIndex:col+row*10];
+    [blockLayer setContents:nil];
     NSString *imageName = [NSString stringWithFormat:@"block%ld", block];
     blockLayer.contents = (id)[UIImage imageNamed:imageName].CGImage;
 }

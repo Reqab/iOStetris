@@ -74,7 +74,7 @@ int polyominoRotations[28][8] = {
 -(BOOL)canMoveRight{
     for (int i = 0; i < 4; i++) {
         if (currentPieceXPos[i] == 17) return NO;
-        if (board[currentPieceXPos[i+1]][currentPieceYPos[i]] != 0) return NO;
+        if (board[currentPieceXPos[i]+1][currentPieceYPos[i]] > -1) return NO;
     }
     return YES;
 }
@@ -90,7 +90,7 @@ int polyominoRotations[28][8] = {
 -(BOOL)canMoveLeft{
     for (int i = 0; i < 4; i++) {
         if (currentPieceXPos[i] == 0) return NO;
-        if (board[currentPieceXPos[i-1]][currentPieceYPos[i]] != 0) return NO;
+        if (board[currentPieceXPos[i]-1][currentPieceYPos[i]] > -1) return NO;
     }
     return YES;
 }
@@ -157,6 +157,23 @@ int polyominoRotations[28][8] = {
 }
 
 -(void)clearFullRows{
+    int rowsCleared = 0;
+    for (int row = 0; row < 18; row++) {
+        BOOL fullRow = true;
+        for (int col = 0; col < 10; col++) {
+            if (board[col][row] == -1) {
+                fullRow = false;
+                break;
+            }
+        }
+        if (fullRow) {
+            rowsCleared++;
+            for (int col = 0; col < 10; col++) {
+                board[col][row] = -2;
+            }
+            self.score += (rowsCleared*100);
+        }
+    }
 }
 
 -(void)newGame{

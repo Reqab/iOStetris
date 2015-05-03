@@ -54,9 +54,10 @@
         [board moveDown];
         [self.puzzleView moveTetrominoDown];
     }else{
-        NSLog(@"lockPiece");
         [board lockPiece];
         [self setTetrisView];
+        [board clearFullRows];
+        self.scoreTextField.text = [NSString stringWithFormat:@"%ld", [board getScore]];
         [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
     }
 }
@@ -88,6 +89,7 @@
 
 //tap events for rotate
 - (IBAction)handleTap:(id)sender {
+    return;
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     TetrisBoard *board = appDelegate.board;
     if([board canRotate]){
@@ -116,19 +118,34 @@
 }
 
 -(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    TetrisBoard *board = appDelegate.board;
+    CGFloat blockWidth = self.puzzleView.bounds.size.width/10;
+    
     if(self.puzzleView.touchLayer != nil){
         UITouch *touch = [touches anyObject];
         CGPoint pos = [touch locationInView:self.puzzleView];
         CGPoint delta = CGPointMake(pos.x-self.puzzleView.touchStartPoint.x,
                                     pos.y-self.puzzleView.touchStartPoint.y);
-        CGPoint newpos;
         
-        if (self.puzzleView.touchLayer.position.x + delta.x <= 0)
-            newpos = CGPointMake(self.puzzleView.current.bounds.size.width/2, self.puzzleView.current.position.y);
-        else if(self.puzzleView.touchLayer.position.x + delta.x >=  self.puzzleView.bounds.size.width)
-            newpos = CGPointMake(self.puzzleView.bounds.size.width - self.puzzleView.current.bounds.size.width/2, self.puzzleView.current.position.y);
-        else
-            newpos = CGPointMake(self.puzzleView.touchStartLayerPosition.x + delta.x, self.puzzleView.current.position.y);
+        CGPoint newpos = CGPointMake(self.puzzleView.touchStartLayerPosition.x + delta.x, self.puzzleView.current.position.y);
+        
+        if (delta.x > 0 && ![board canMoveRight]) {
+            newpos = self.puzzleView.touchLayer.position;
+        }else if (delta.x < 0 && ![board canMoveLeft]){
+            newpos = self.puzzleView.touchLayer.position;
+        }
+        
+        CGFloat pieceWidth;
+        if([board getCurrentPieceDirection]%2 == 0){
+            pieceWidth = self.puzzleView.current.bounds.size.width;
+        }else{
+            pieceWidth = self.puzzleView.current.bounds.size.height;
+        }
+        
+        NSInteger row = round((self.puzzleView.current.position.x - pieceWidth/2)/blockWidth);
+        NSInteger newrow = round((newpos.x - pieceWidth/2)/blockWidth);
+        if (newrow != row) newrow > row ? [board moveRight] : [board moveLeft];
         
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
@@ -138,12 +155,21 @@
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    TetrisBoard *board = appDelegate.board;
+    
     if(self.puzzleView.touchLayer != nil){
         CGFloat blockWidth = self.puzzleView.bounds.size.width/10;
-        NSInteger row = round(self.puzzleView.touchLayer.position.x/blockWidth);
-        NSInteger rowAdj = round(self.puzzleView.current.bounds.size.width/blockWidth);
-        rowAdj = rowAdj%2;
-        CGPoint  newpos = CGPointMake(blockWidth*(row - rowAdj*0.5), self.puzzleView.current.position.y);
+        CGFloat pieceWidth;
+        if([board getCurrentPieceDirection]%2 == 0){
+            pieceWidth = self.puzzleView.current.bounds.size.width;
+        }else{
+            pieceWidth = self.puzzleView.current.bounds.size.height;
+        }
+        
+        NSInteger row = round((self.puzzleView.current.position.x - pieceWidth/2)/blockWidth);
+        CGPoint  newpos = CGPointMake(blockWidth*row + pieceWidth/2, self.puzzleView.current.position.y);
+        
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         self.puzzleView.touchLayer.position = newpos;
