@@ -15,9 +15,6 @@ NSInteger currentPieceYPos[4];
 NSInteger currentPiece;
 NSInteger direction;
 
-
-@implementation TetrisBoard
-
 int polyominoRotations[28][8] = {
     {0,0, 1,0, 2,0, 3,0},   //I
     {1,-1, 1,0, 1,1, 1,2},
@@ -54,6 +51,9 @@ int polyominoRotations[28][8] = {
     {0,0, 1,0, 1,1, 2,1},
     {1,-1, 0,0, 1,0, 0,1}
 };
+
+
+@implementation TetrisBoard
 
 -(instancetype)init{
     if(self = [super init]){
@@ -156,24 +156,15 @@ int polyominoRotations[28][8] = {
     return direction;
 }
 
--(void)clearFullRows{
-    int rowsCleared = 0;
-    for (int row = 0; row < 18; row++) {
-        BOOL fullRow = true;
-        for (int col = 0; col < 10; col++) {
-            if (board[col][row] == -1) {
-                fullRow = false;
-                break;
-            }
-        }
-        if (fullRow) {
-            rowsCleared++;
-            for (int col = 0; col < 10; col++) {
-                board[col][row] = -2;
-            }
-            self.score += (rowsCleared*100);
-        }
+-(BOOL)isFullRow:(int)row{
+    for (int col = 0; col < 10; col++) {
+        if (board[col][row] > -1) return NO;
     }
+    return YES;
+}
+
+-(void)clearRow:(int)row{
+
 }
 
 -(void)newGame{

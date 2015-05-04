@@ -56,7 +56,6 @@
     }else{
         [board lockPiece];
         [self setTetrisView];
-        [board clearFullRows];
         self.scoreTextField.text = [NSString stringWithFormat:@"%ld", [board getScore]];
         [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
     }
@@ -89,7 +88,6 @@
 
 //tap events for rotate
 - (IBAction)handleTap:(id)sender {
-    return;
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     TetrisBoard *board = appDelegate.board;
     if([board canRotate]){
@@ -112,8 +110,6 @@
         self.puzzleView.touchStartPoint = pos;
         self.puzzleView.touchStartLayerPosition = layer.superlayer.position;
         self.puzzleView.touchLayer = layer.superlayer;
-    }else{
-        NSLog(@"touched table");
     }
 }
 
@@ -147,10 +143,7 @@
         NSInteger newrow = round((newpos.x - pieceWidth/2)/blockWidth);
         if (newrow != row) newrow > row ? [board moveRight] : [board moveLeft];
         
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
         self.puzzleView.touchLayer.position = newpos;
-        [CATransaction commit];
     }
 }
 

@@ -9,6 +9,17 @@
 #import "TetrisView.h"
 #import "ViewController.h"
 
+int polyominos[7][10] = {
+    //block possition  |layer dimensions
+    {0,0, 1,0, 2,0, 3,0, 4,1},  //I
+    {0,0, 1,0, 0,1, 1,1, 2,2},  //O
+    {0,0, 1,0, 2,0, 1,1, 3,2},  //T
+    {0,0, 1,0, 2,0, 0,1, 3,2},  //L
+    {0,0, 1,0, 2,0, 2,1, 3,2},  //J
+    {1,0, 2,0, 0,1, 1,1, 3,2},  //S
+    {0,0, 1,0, 1,1, 2,1, 3,2}   //Z
+};
+
 @interface TetrisView()
 
 @end
@@ -77,18 +88,6 @@
     CATransform3D xForm = CATransform3DIdentity;
     self.current.transform = CATransform3DRotate(xForm, M_PI_2*direction, 0, 0, 1);
 }
-
-//setup tetrominoes
-int polyominos[7][10] = {
-    //block possition  |layer dimensions
-    {0,0, 1,0, 2,0, 3,0, 4,1},  //I
-    {0,0, 1,0, 0,1, 1,1, 2,2},  //O
-    {0,0, 1,0, 2,0, 1,1, 3,2},  //T
-    {0,0, 1,0, 2,0, 0,1, 3,2},  //L
-    {0,0, 1,0, 2,0, 2,1, 3,2},  //J
-    {1,0, 2,0, 0,1, 1,1, 3,2},  //S
-    {0,0, 1,0, 1,1, 2,1, 3,2}   //Z
-};
 
 -(void)layoutTetromino:(int)tet{
     CGFloat blockWidth = self.bounds.size.width/10;

@@ -31,7 +31,8 @@
 -(NSInteger)getBlockInRow:(int)row col:(int)col;
 -(NSInteger)getScore;
 -(void)newGame;
--(void)clearFullRows;
+-(void)clearRow:(int)row;
+-(BOOL)isFullRow:(int)row;
 
 @end
 
