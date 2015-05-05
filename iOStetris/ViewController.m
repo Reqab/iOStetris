@@ -17,7 +17,6 @@
 @property (strong, nonatomic) NSTimer *timer;
 @property (assign, nonatomic) BOOL isPaused;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *pause;
-@property (strong, nonatomic) IBOutlet UITapGestureRecognizer *tapGestureRecognizer;
 @property (weak, nonatomic) IBOutlet UITextField *scoreTextField;
 
 
@@ -60,7 +59,7 @@
                 [board clearRow:row];
         }
         [self setTetrisView];
-        self.scoreTextField.text = [NSString stringWithFormat:@"%ld", [board getScore]];
+        self.scoreTextField.text = [NSString stringWithFormat:@"%ld", (long)[board getScore]];
         [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
     }
 }
@@ -69,7 +68,7 @@
     [super viewDidAppear:animated];
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     TetrisBoard *board = appDelegate.board;
-    self.scoreTextField.text = [NSString stringWithFormat:@"%ld", [board getScore]];
+    self.scoreTextField.text = [NSString stringWithFormat:@"%ld", (long)[board getScore]];
     
     //timer setup
     self.isPaused = NO;
@@ -85,7 +84,7 @@
     
     UIAlertController* alertController = [UIAlertController
                                           alertControllerWithTitle:@"Menu"
-                                          message:[NSString stringWithFormat:@"Level: %ld", [board getLevel]]
+                                          message:[NSString stringWithFormat:@"Level: %ld", (long)[board getLevel]]
                                           preferredStyle:UIAlertControllerStyleActionSheet];
     
     [alertController addAction:[UIAlertAction

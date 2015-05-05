@@ -61,8 +61,9 @@ int polyominos[7][10] = {
 
 -(void)setBlockContentInTetrisLayerAtRow:(int)row Col:(int)col Block:(NSInteger)block{
     CALayer *blockLayer = [self.layer.sublayers objectAtIndex:col+row*10];
-    [blockLayer setContents:nil];
-    NSString *imageName = [NSString stringWithFormat:@"block%ld", block];
+    //[blockLayer setContents:nil];
+    NSString *imageName = [NSString stringWithFormat:@"block%ld", (long)block];
+    
     blockLayer.contents = (id)[UIImage imageNamed:imageName].CGImage;
 }
 
