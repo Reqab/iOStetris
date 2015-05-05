@@ -55,6 +55,10 @@
         [self.puzzleView moveTetrominoDown];
     }else{
         [board lockPiece];
+        for (int row = 0; row < 18; row++) {
+            if([board isFullRow:row])
+                [board clearRow:row];
+        }
         [self setTetrisView];
         self.scoreTextField.text = [NSString stringWithFormat:@"%ld", [board getScore]];
         [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];

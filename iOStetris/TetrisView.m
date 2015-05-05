@@ -10,7 +10,7 @@
 #import "ViewController.h"
 
 int polyominos[7][10] = {
-    //block possition  |layer dimensions
+    //block possition  | layer dimensions
     {0,0, 1,0, 2,0, 3,0, 4,1},  //I
     {0,0, 1,0, 0,1, 1,1, 2,2},  //O
     {0,0, 1,0, 2,0, 1,1, 3,2},  //T
@@ -47,15 +47,20 @@ int polyominos[7][10] = {
 }
 
 -(void)setCurrentTetromino:(int)i{
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    CGFloat blockWidth = self.bounds.size.width/10;
+    CGFloat blockHeight = self.bounds.size.height/18;
     [self.current removeFromSuperlayer];
     CATransform3D xForm = CATransform3DIdentity;
     self.current.transform = CATransform3DRotate(xForm, 0, 0, 0, 1);
     self.current = [self.tetrominoArray objectAtIndex:i];
+    self.current.position = CGPointMake(blockWidth*(3+polyominos[i][8]/2.0), blockHeight*polyominos[i][9]/2.0);
+    [CATransaction commit];
     [self.layer addSublayer:self.current];
 }
 
 -(void)setBlockContentInTetrisLayerAtRow:(int)row Col:(int)col Block:(NSInteger)block{
-    //NSLog(@"setBlockContentInTetrisLayerAtRow:(int)%i Col:(int)%i Block:(NSInteger)%ld", row, col, block);
     CALayer *blockLayer = [self.layer.sublayers objectAtIndex:col+row*10];
     [blockLayer setContents:nil];
     NSString *imageName = [NSString stringWithFormat:@"block%ld", block];
@@ -81,12 +86,19 @@ int polyominos[7][10] = {
     CGFloat blockHeight = self.bounds.size.height/18;
     CGPoint newpos = CGPointMake(self.current.position.x, self.current.position.y + blockHeight);
     self.current.position = newpos;
-    [self setNeedsDisplay];
 }
 
 -(void)rotateTetromino:(int)direction{
+    CGFloat blockWidth = self.bounds.size.width/10;
+    CGFloat blockHeight = self.bounds.size.height/18;
+    
     CATransform3D xForm = CATransform3DIdentity;
     self.current.transform = CATransform3DRotate(xForm, M_PI_2*direction, 0, 0, 1);
+    if(direction%2 == 0)
+        self.current.position = CGPointMake(self.current.position.x+blockWidth/2, self.current.position.y+blockHeight/2);
+    else
+        self.current.position = CGPointMake(self.current.position.x-blockWidth/2, self.current.position.y-blockHeight/2);
+    
 }
 
 -(void)layoutTetromino:(int)tet{
@@ -95,7 +107,6 @@ int polyominos[7][10] = {
     
     CALayer *tetromino = [self.tetrominoArray objectAtIndex:tet];
     tetromino.bounds = CGRectMake(0, 0, blockWidth*polyominos[tet][8], blockHeight*polyominos[tet][9]);
-    tetromino.position = CGPointMake(blockWidth*(3+polyominos[tet][8]/2.0), blockHeight*polyominos[tet][9]/2.0);
     
     NSString *imageName = [NSString stringWithFormat:@"block%i", tet];
     for (int i = 0; i < 4; i++) {

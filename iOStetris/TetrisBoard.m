@@ -32,14 +32,14 @@ int polyominoRotations[28][8] = {
     {1,-1, 1,0, 2,0, 1,1},
     
     {0,0, 1,0, 2,0, 0,1},   //L
-    {1,-1, 2,-1, 2,0, 2,1},
+    {0,-1, 1,-1, 1,0, 1,1},
     {2,0, 0,1, 1,1, 2,1},
-    {1,-1, 1,0, 1,1, 2,1},
+    {0,-1, 0,0, 0,1, 1,1},
     
     {0,0, 1,0, 2,0, 2,1},   //J
-    {2,-1, 2,0, 1,1, 2,1},
+    {1,-1, 1,0, 0,1, 1,1},
     {0,0, 0,1, 1,1, 2,1},
-    {1,-1, 2,-1, 1,0, 1,1},
+    {0,-1, 1,-1, 0,0, 0,1},
     
     {1,0, 2,0, 0,1, 1,1},   //S
     {0,-1, 0,0, 1,0, 1,1},
@@ -158,13 +158,19 @@ int polyominoRotations[28][8] = {
 
 -(BOOL)isFullRow:(int)row{
     for (int col = 0; col < 10; col++) {
-        if (board[col][row] > -1) return NO;
+        if (board[col][row] == -1) return NO;
     }
     return YES;
 }
 
--(void)clearRow:(int)row{
-
+-(void)clearRow:(int)i{
+    for (int col = 0; col < 10; col++) {
+        for (int row = i; row >0; row--) {
+            board[col][row] =board[col][row-1];
+        }
+        board[col][0] = -1;
+    }
+    self.score += 100*self.level;
 }
 
 -(void)newGame{
