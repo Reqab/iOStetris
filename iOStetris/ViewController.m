@@ -118,17 +118,6 @@
     }
 }
 
-//tap events for rotate
-- (IBAction)handleTap:(id)sender {
-    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
-    TetrisBoard *board = appDelegate.board;
-    if([board canRotate]){
-        [board rotate];
-        int direction = (int)[board getCurrentPieceDirection];
-        [self.puzzleView rotateTetromino:direction];
-    }
-}
-
 //touch events
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
@@ -183,6 +172,17 @@
     AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
     TetrisBoard *board = appDelegate.board;
     
+    UITouch *touch = [touches anyObject];
+    if(touch.tapCount >= 2){
+        AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        TetrisBoard *board = appDelegate.board;
+        if([board canRotate]){
+            [board rotate];
+            int direction = (int)[board getCurrentPieceDirection];
+            [self.puzzleView rotateTetromino:direction];
+        }
+    }
+    
     if(self.puzzleView.touchLayer != nil){
         CGFloat blockWidth = self.puzzleView.bounds.size.width/10;
         CGFloat pieceWidth;
@@ -195,10 +195,7 @@
         NSInteger row = round((self.puzzleView.current.position.x - pieceWidth/2)/blockWidth);
         CGPoint  newpos = CGPointMake(blockWidth*row + pieceWidth/2, self.puzzleView.current.position.y);
         
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
         self.puzzleView.touchLayer.position = newpos;
-        [CATransaction commit];
     }
     self.puzzleView.touchLayer = nil;
 }

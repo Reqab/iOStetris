@@ -29,7 +29,7 @@ int polyominoRotations[28][8] = {
     {0,0, 1,0, 2,0, 1,1},   //T
     {1,-1, 0,0, 1,0, 1,1},
     {1,0, 0,1, 1,1, 2,1},
-    {1,-1, 1,0, 2,0, 1,1},
+    {0,-1, 0,0, 1,0, 0,1},
     
     {0,0, 1,0, 2,0, 0,1},   //L
     {0,-1, 1,-1, 1,0, 1,1},
@@ -122,7 +122,15 @@ int polyominoRotations[28][8] = {
 }
 
 -(BOOL)canRotate{
-    return true;
+    NSInteger newDirection = (direction+1)%4;
+    for (int i = 0; i < 4; i++) {
+        NSInteger deltaX = polyominoRotations[currentPiece*4+newDirection][i*2] - polyominoRotations[currentPiece*4+direction][i*2];
+        NSInteger deltaY = polyominoRotations[currentPiece*4+newDirection][i*2+1] - polyominoRotations[currentPiece*4+direction][i*2+1];
+        if(board[currentPieceXPos[i]+deltaX][currentPieceYPos[i]+deltaY] > -1) return NO;
+        if(currentPieceYPos[i]+deltaY < 0 || currentPieceYPos[i]+deltaY > 17) return NO;
+        if(currentPieceXPos[i]+deltaX < 0 || currentPieceXPos[i]+deltaX > 9) return NO;
+    }
+    return YES;
 }
 
 -(void)rotate{

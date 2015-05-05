@@ -93,7 +93,8 @@ int polyominos[7][10] = {
     
     CATransform3D xForm = CATransform3DIdentity;
     self.current.transform = CATransform3DRotate(xForm, M_PI_2*direction, 0, 0, 1);
-    if(direction%2 == 0)
+    if (self.current.bounds.size.width == 2*blockWidth && self.current.bounds.size.height == 2*blockHeight) return;
+    else if(direction%2 == 0)
         self.current.position = CGPointMake(self.current.position.x+blockWidth/2, self.current.position.y+blockHeight/2);
     else
         self.current.position = CGPointMake(self.current.position.x-blockWidth/2, self.current.position.y-blockHeight/2);
