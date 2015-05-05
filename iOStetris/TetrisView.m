@@ -31,8 +31,7 @@ int polyominos[7][10] = {
     for (int i = 0; i < 7; i++) {
         [self layoutTetromino:i];
     }
-    
-    //setup tetrisBoardView
+
     CGFloat blockWidth = self.bounds.size.width/10;
     CGFloat blockHeight = self.bounds.size.height/18;
     for (int row = 0; row < 18; row++) {

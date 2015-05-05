@@ -26,7 +26,11 @@
                                             <constraint firstAttribute="height" constant="44" id="ErL-FI-BOZ"/>
                                         </constraints>
                                         <items>
-                                            <barButtonItem title="Menu" id="zo3-sR-ozv"/>
+                                            <barButtonItem title="Menu" id="zo3-sR-ozv">
+                                                <connections>
+                                                    <action selector="menuButton:" destination="BYZ-38-t0r" id="TsW-tc-rPA"/>
+                                                </connections>
+                                            </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="spa-xP-nwp"/>
                                             <barButtonItem style="plain" id="6d2-Nz-uaU">
                                                 <textField key="customView" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Score: 999999999" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" id="yhg-RQ-hf8" userLabel="scoreTextField">

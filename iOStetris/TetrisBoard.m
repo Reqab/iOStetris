@@ -188,4 +188,8 @@ int polyominoRotations[28][8] = {
     return self.score;
 }
 
+-(NSInteger)getLevel{
+    return self.level;
+}
+
 @end

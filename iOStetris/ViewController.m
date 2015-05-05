@@ -77,6 +77,35 @@
     [self.puzzleView setCurrentTetromino:(int)board.getCurrentPiece];
 }
 
+- (IBAction)menuButton:(id)sender {
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    TetrisBoard *board = appDelegate.board;
+    
+    [self.timer invalidate];
+    
+    UIAlertController* alertController = [UIAlertController
+                                          alertControllerWithTitle:@"Menu"
+                                          message:[NSString stringWithFormat:@"Level: %ld", [board getLevel]]
+                                          preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [alertController addAction:[UIAlertAction
+                                actionWithTitle:@"Cancel"
+                                style:UIAlertActionStyleCancel
+                                handler:^(UIAlertAction*action){
+                                    self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(moveDown) userInfo:nil repeats:YES];}]];
+    [alertController addAction:[UIAlertAction
+                                actionWithTitle:@"New Game"
+                                style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction *action) {
+                                    self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(moveDown) userInfo:nil repeats:YES];
+                                    [board newGame];
+                                    [self setTetrisView];
+                                    [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
+                                }]];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 - (IBAction)pause:(id)sender {
     if(self.isPaused){
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(moveDown) userInfo:nil repeats:YES];
@@ -84,7 +113,6 @@
         self.pause.title = @"Pause";
     }else{
         [self.timer invalidate];
-        self.timer = nil;
         self.isPaused = YES;
         self.pause.title = @"Resume";
     }

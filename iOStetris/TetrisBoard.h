@@ -30,6 +30,7 @@
 -(NSInteger)getCurrentPieceDirection;
 -(NSInteger)getBlockInRow:(int)row col:(int)col;
 -(NSInteger)getScore;
+-(NSInteger)getLevel;
 -(void)newGame;
 -(void)clearRow:(int)row;
 -(BOOL)isFullRow:(int)row;
