@@ -55,12 +55,13 @@
     }else{
         [board lockPiece];
         for (int row = 0; row < 18; row++) {
-            if([board isFullRow:row])
+            if([board isFullRow:row]){
                 [board clearRow:row];
+            }
         }
         [self setTetrisView];
-        self.scoreTextField.text = [NSString stringWithFormat:@"%ld", (long)[board getScore]];
         [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
+        self.scoreTextField.text = [NSString stringWithFormat:@"%ld", (long)[board getScore]];
     }
 }
 
@@ -100,6 +101,7 @@
                                     [board newGame];
                                     [self setTetrisView];
                                     [self.puzzleView setCurrentTetromino:(int)[board getCurrentPiece]];
+                                    self.scoreTextField.text = [NSString stringWithFormat:@"%ld", (long)[board getScore]];
                                 }]];
     
     [self presentViewController:alertController animated:YES completion:nil];

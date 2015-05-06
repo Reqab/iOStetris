@@ -9,6 +9,8 @@
 #import "TetrisView.h"
 #import "ViewController.h"
 
+int z = 0;
+
 int polyominos[7][10] = {
     //block possition  | layer dimensions
     {0,0, 1,0, 2,0, 3,0, 4,1},  //I
@@ -21,6 +23,8 @@ int polyominos[7][10] = {
 };
 
 @interface TetrisView()
+
+@property (strong, nonatomic) NSArray *tetrisLayers;
 
 @end
 
@@ -36,11 +40,8 @@ int polyominos[7][10] = {
     CGFloat blockHeight = self.bounds.size.height/18;
     for (int row = 0; row < 18; row++) {
         for(int col = 0; col < 10; col++){
-            CALayer *block = [[CALayer alloc] init];
+            CALayer *block = [self.tetrisLayers objectAtIndex:col+row*10];
             block.bounds = CGRectMake(0, 0, blockWidth, blockHeight);
-            block.position = CGPointMake(blockWidth/2+blockWidth*col, blockHeight/2+blockHeight*row);
-            block.name = @"tetrisBlock";
-            [self.layer insertSublayer:block atIndex:col+row*10];
         }
     }
 }
@@ -60,10 +61,11 @@ int polyominos[7][10] = {
 }
 
 -(void)setBlockContentInTetrisLayerAtRow:(int)row Col:(int)col Block:(NSInteger)block{
-    CALayer *blockLayer = [self.layer.sublayers objectAtIndex:col+row*10];
-    //[blockLayer setContents:nil];
+    CGFloat blockWidth = self.bounds.size.width/10;
+    CGFloat blockHeight = self.bounds.size.height/18;
+    CALayer *blockLayer = [self.tetrisLayers objectAtIndex:col+row*10];
     NSString *imageName = [NSString stringWithFormat:@"block%ld", (long)block];
-    
+    blockLayer.position = CGPointMake(blockWidth/2+blockWidth*col, blockHeight/2+blockHeight*row);
     blockLayer.contents = (id)[UIImage imageNamed:imageName].CGImage;
 }
 
@@ -80,6 +82,18 @@ int polyominos[7][10] = {
         [tetrominoes addObject:tetrominoLayer];
     }
     self.tetrominoArray = [NSArray arrayWithArray:tetrominoes];
+    
+    //build tetris board layer
+    NSMutableArray *tetrisLayer = [[NSMutableArray alloc] init];
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 10; col++) {
+            CALayer *block = [[CALayer alloc] init];
+            block.name = @"tetrisBlock";
+            [self.layer addSublayer:block];
+            [tetrisLayer addObject:block];
+        }
+    }
+    self.tetrisLayers = [NSArray arrayWithArray:tetrisLayer];
 }
 
 -(void)moveTetrominoDown{
